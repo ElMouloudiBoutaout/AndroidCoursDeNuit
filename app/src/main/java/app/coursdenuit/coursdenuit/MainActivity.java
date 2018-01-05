@@ -8,12 +8,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.commons.codec.binary.Base64;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
 import app.coursdenuit.coursdenuit.entities.Etudiant;
 import app.coursdenuit.coursdenuit.entities.Requete;
+import app.coursdenuit.coursdenuit.entities.Utilisateur;
 import app.coursdenuit.coursdenuit.iService.IRequeteService;
 import app.coursdenuit.coursdenuit.service.RequeteService;
 
@@ -67,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        public void login(){
+        public void login(RestTemplate restTemplate){
             String plainCreds = "ayoub@gmail.com:123456789";
             byte[] plainCredsBytes = plainCreds.getBytes();
             byte[] base64CredsBytes = Base64.encodeBase64(plainCredsBytes);
@@ -75,6 +79,10 @@ public class MainActivity extends AppCompatActivity {
 
             HttpHeaders headers = new HttpHeaders();
             headers.add("Authorization", "Basic " + base64Creds);
+
+            HttpEntity<String> request = new HttpEntity<String>(headers);
+            ResponseEntity<Utilisateur> response = restTemplate.exchange(StaticVars.url+"/login", HttpMethod.GET, request, Utilisateur.class);
+            Utilisateur u = response.getBody();
         }
 
     }
